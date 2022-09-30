@@ -36,11 +36,16 @@
             </table>
             <div class="controls" v-if="loading == false">
                 <div class="select">
-                    <select v-model="selected" >
-                            <option v-for="option in options" :key="option.txt">
-                                <p>{{ option.txt }}</p>
-                            </option>
-                    </select>
+                    <div @click="showSelectData = true">
+                        <div class="select_input">
+                            <span class="select_input_txt">{{selected}}</span>
+                            <span class="select_input_ico" v-if="showSelectData == false"><mdicon name="ChevronDown" /></span>
+                            <span class="select_input_ico" v-if="showSelectData == true"><mdicon name="ChevronUp" /></span>
+                        </div>
+                    </div>
+                    <ul class="select_data" :class="{'active': showSelectData == true}">
+                        <li class="select_data_item" v-for="option in options" :key="option.txt" @click="selectedItem(option.txt)">{{option.txt}}</li>
+                    </ul>
                 </div>
                 <div class="controls_item">
                     <span class="controls_item_btn_next" :class="{'disabled' : pageNumber==0}" @click="prevPage"><mdicon name="ChevronLeft" /> </span>
@@ -66,6 +71,7 @@ export default {
         }
     },
     data: () => ({
+
         loading: true,
         dataTableSearch: [],
         noData: false,
@@ -76,6 +82,7 @@ export default {
             {txt: 'Расстояние', value: 'distance', sorting: null, id: 4}
         ],
         selected: 5,
+        showSelectData: false,
         options: [
             {txt: 5, id: 1},
             {txt: 10, id: 2},
@@ -279,6 +286,10 @@ export default {
             return this.dataTableSearch = this.dataTable
 
             
+        },
+        selectedItem(item){
+            this.showSelectData = false
+            this.selected = item
         }
 
     },
@@ -427,19 +438,43 @@ th{
         color: rgba(240, 248, 255, 0.514);
     }
 }
-
-.select select{
-    width: 200px;
-    height: 26px;
-    border-radius: 5px;
-    border: 1px solid #494ce8;
-}
 .error_data_item{
     background-color: none;
     text-align: center;
     font-weight: 200;
     box-shadow: 0;
 }
+.select{
+    width: 200px;
+    height: 27px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    .select_input{
+        display: flex;
+        align-items: center;
+        .select_input_txt{
+            width: 100%;
+        }
+        .select_input_ico{
+           margin-left: -23px;
+        }
+    }
+    .select_data{
+        opacity: 0;
+        transition: 1s;
+        background-color: #fff;
 
-
+        .select_data_item{
+            height: 30px;
+            padding: 5px 0;
+            border-bottom: 1px solid #000;
+        }
+        .select_data_item:hover{
+            background-color: #494ce886;
+        }
+    }
+    .select_data.active{
+        opacity: 1;
+    }
+}
 </style>
